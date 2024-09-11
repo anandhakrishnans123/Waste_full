@@ -216,11 +216,12 @@ def to_excel(df):
         df.to_excel(writer, index=False)
     processed_data = output.getvalue()
     return processed_data
-st.subheader('Oil Generated')
+
 # Function to resize and return an image
 
 if uploaded_file is not None:
     # Process the uploaded file
+    st.subheader('Oil Generated')
     unpivoted_df = process_file(uploaded_file)
     
     # Display success message and show the processed DataFrame
