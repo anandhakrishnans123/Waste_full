@@ -224,7 +224,7 @@ if uploaded_file is not None:
     unpivoted_df = process_file(uploaded_file)
     
     # Display success message and show the processed DataFrame
-    st.success("File processed successfully!")
+
     st.dataframe(unpivoted_df)
 
     # Button to download the processed file
