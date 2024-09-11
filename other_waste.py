@@ -216,7 +216,7 @@ def to_excel(df):
         df.to_excel(writer, index=False)
     processed_data = output.getvalue()
     return processed_data
-
+st.subheader('Oil Generated')
 # Function to resize and return an image
 
 if uploaded_file is not None:
