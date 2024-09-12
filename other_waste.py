@@ -10,41 +10,6 @@ from io import BytesIO
 from PIL import Image as PILImage
 import base64
 # Streamlit interface
-def resize_image(image_path, width):
-    img = PILImage.open(image_path)
-    aspect_ratio = img.height / img.width
-    new_height = int(width * aspect_ratio)
-    img_resized = img.resize((width, new_height))
-    
-    # Save the resized image to a BytesIO object
-    buffered = BytesIO()
-    img_resized.save(buffered, format="PNG")
-    
-    # Encode the image to Base64
-    img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
-    return img_base64
-
-# Streamlit app
-st.markdown(
-    """
-    <style>
-    .centered-image {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 300px; /* Adjust width as needed */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# Add an image at the top of the app with reduced size
-top_image_base64 = resize_image("logo.png", width=300)  # Adjust width as needed
-st.markdown(
-    f'<img src="data:image/png;base64,{top_image_base64}" class="centered-image">',
-    unsafe_allow_html=True
-)
 
 st.title('Vessel Waste Data Mapping Tool')
 
