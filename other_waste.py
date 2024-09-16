@@ -29,52 +29,43 @@ if uploaded_file:
     all_sheets = pd.read_excel(uploaded_file, sheet_name=sheets_to_extract, header=[0, 1, 2])
 
     # Function to extract and unpivot garbage data
-def extract_and_unpivot_garbage_data(sheets_dict, garbage_type):
-    combined_data = []
-    
-    for sheet_name, vessel_df in sheets_dict.items():
-        date_column = pd.to_datetime(vessel_df.iloc[:, 0], errors='coerce')
-        first_valid_index = date_column.first_valid_index()
-
-        if first_valid_index is None:
-            continue  # Skip sheets without valid dates
-
-        date_column = date_column.loc[first_valid_index:].reset_index(drop=True)
-        data_rows = vessel_df.loc[first_valid_index:].reset_index(drop=True)
+    def extract_and_unpivot_garbage_data(sheets_dict, garbage_type):
+        combined_data = []
         
-        garbage_columns = [
-            col for col in data_rows.columns
-            if col[0] == 'Garbage Record Book' and col[1].strip() == garbage_type
-        ]
-        
-        if not garbage_columns:
-            st.write(f"No '{garbage_type}' data found in sheet {sheet_name}")
-            continue
+        for sheet_name, vessel_df in sheets_dict.items():
+            date_column = pd.to_datetime(vessel_df.iloc[:, 0], errors='coerce')
+            first_valid_index = date_column.first_valid_index()
 
-        for col in garbage_columns:
-            sub_section = col[2]
-            temp_df = pd.DataFrame({
-                'Date': date_column,
-                'Sub Section': sub_section,
-                'Amount': data_rows[col].reset_index(drop=True),
-                'Sheet Name': sheet_name
-            })
-            combined_data.append(temp_df)
+            if first_valid_index is None:
+                continue  # Skip sheets without valid dates
 
-    final_df = pd.concat(combined_data, ignore_index=True)
-    final_df.replace({"m3", "Total"}, np.nan, inplace=True)
-    final_df.dropna(subset=["Date"], inplace=True)
-    final_df.drop_duplicates(inplace=True)
+            date_column = date_column.loc[first_valid_index:].reset_index(drop=True)
+            data_rows = vessel_df.loc[first_valid_index:].reset_index(drop=True)
+            
+            garbage_columns = [
+                col for col in data_rows.columns
+                if col[0] == 'Garbage Record Book' and col[1].strip() == garbage_type
+            ]
+            
+            if not garbage_columns:
+                st.write(f"No '{garbage_type}' data found in sheet {sheet_name}")
+                continue
 
-    # Add the new columns as requested
-    final_df['CF Standard'] = "IPCCC"
-    final_df['Activity Unit'] = "m3"
-    final_df['Gas'] = "CO2"
+            for col in garbage_columns:
+                sub_section = col[2]
+                temp_df = pd.DataFrame({
+                    'Date': date_column,
+                    'Sub Section': sub_section,
+                    'Amount': data_rows[col].reset_index(drop=True),
+                    'Sheet Name': sheet_name
+                })
+                combined_data.append(temp_df)
 
-    # Reorder the columns to include the new ones
-    final_df = final_df[['Date', 'Sheet Name', 'Sub Section', 'Amount', 'Activity Unit', 'CF Standard', 'Gas']]
-
-    return final_df
+        final_df = pd.concat(combined_data, ignore_index=True)
+        final_df.replace({"m3", "Total"}, np.nan, inplace=True)
+        final_df.dropna(subset=["Date"], inplace=True)
+        final_df.drop_duplicates(inplace=True)
+        return final_df
 
     # Extract data for different garbage types
     garbage_incinerated_df = extract_and_unpivot_garbage_data(all_sheets, 'Garbage Incinerated')
