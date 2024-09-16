@@ -62,6 +62,9 @@ if uploaded_file:
                 combined_data.append(temp_df)
 
         final_df = pd.concat(combined_data, ignore_index=True)
+        final_df['CF Standard'] = "IPCCC"
+        final_df['Activity Unit'] = "m3"
+        final_df['Gas'] = "CO2"
         final_df.replace({"m3", "Total"}, np.nan, inplace=True)
         final_df.dropna(subset=["Date"], inplace=True)
         final_df.drop_duplicates(inplace=True)
