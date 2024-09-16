@@ -54,7 +54,7 @@ if uploaded_file:
             for col in garbage_columns:
                 sub_section = col[2]
                 temp_df = pd.DataFrame({
-                    'Date': date_column,
+                    'Date': "date_column",
                     'Sub Section': sub_section,
                     'Amount': data_rows[col].reset_index(drop=True),
                     'Sheet Name': sheet_name
