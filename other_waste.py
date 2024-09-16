@@ -54,7 +54,7 @@ if uploaded_file:
             for col in garbage_columns:
                 sub_section = col[2]
                 temp_df = pd.DataFrame({
-                    'Date': "date_column",
+                    'Date': date_column,
                     'Sub Section': sub_section,
                     'Amount': data_rows[col].reset_index(drop=True),
                     'Sheet Name': sheet_name
@@ -62,6 +62,7 @@ if uploaded_file:
                 combined_data.append(temp_df)
 
         final_df = pd.concat(combined_data, ignore_index=True)
+        final_df.rename(columns={"Date":"Res_Date","Sub Section":"Source Sub Type","Amount":"Activity","Sheet Name":"Facility"},inplace=True)
         final_df['CF Standard'] = "IPCCC"
         final_df['Activity Unit'] = "m3"
         final_df['Gas'] = "CO2"
