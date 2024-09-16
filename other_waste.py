@@ -164,6 +164,8 @@ def process_file(uploaded_file):
 
     unpivoted_df = unpivoted_df.dropna(subset="Waste Amount")
     unpivoted_df.rename(columns=column_mapping, inplace=True)
+
+    # Add the new columns as requested
     unpivoted_df['CF Standard'] = "IPCCC"
     unpivoted_df['Activity Unit'] = "m3"
     unpivoted_df['Gas'] = "CO2"
