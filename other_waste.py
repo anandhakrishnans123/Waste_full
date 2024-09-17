@@ -29,7 +29,7 @@ if uploaded_file:
     all_sheets = pd.read_excel(uploaded_file, sheet_name=sheets_to_extract, header=[0, 1, 2])
 
     # Function to extract and unpivot garbage data
-    def extract_and_unpivot_garbage_data(sheets_dict, garbage_type):
+def extract_and_unpivot_garbage_data(sheets_dict, garbage_type):
     combined_data = []
     
     for sheet_name, vessel_df in sheets_dict.items():
@@ -85,6 +85,7 @@ if uploaded_file:
     final_df = final_df[['Res_Date', 'Facility', 'Source Sub Type', 'Activity', 'Activity Unit', 'CF Standard', 'Gas']]
 
     return final_df
+
 
 
     # Extract data for different garbage types
