@@ -63,9 +63,9 @@ if uploaded_file:
 
         final_df = pd.concat(combined_data, ignore_index=True)
         
-        final_df['CF Standard'] = final_df['CF Standard'].fillna("IPCCC")
-        final_df['Activity Unit'] = final_df['Activity Unit'].fillna("m3")
-        final_df['Gas'] = final_df['Gas'].fillna("CO2")
+        final_df['CF Standard'] = "IPCCC"
+        final_df['Activity Unit'] = "m3"
+        final_df['Gas'] = "CO2"
         final_df.replace({"m3", "Total"}, np.nan, inplace=True)
         final_df.dropna(subset=["Date"], inplace=True)
         final_df.drop_duplicates(inplace=True)
@@ -76,7 +76,7 @@ if uploaded_file:
     "Sheet Name": "Facility"
 }, inplace=True)
         final_df = final_df[['Res_Date', 'Facility', 'Source Sub Type', 'Activity', 'Activity Unit', 'CF Standard', 'Gas']]
-
+        final_df['Activity Unit'] = "m3"
 
         return final_df
 
