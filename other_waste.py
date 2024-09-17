@@ -75,6 +75,8 @@ if uploaded_file:
     "Amount": "Activity",
     "Sheet Name": "Facility"
 }, inplace=True)
+        final_df = final_df[['Res_Date', 'Facility', 'Source Sub Type', 'Activity', 'Activity Unit', 'CF Standard', 'Gas']]
+
 
         return final_df
 
