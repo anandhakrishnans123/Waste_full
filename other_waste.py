@@ -75,7 +75,8 @@ if uploaded_file:
     "Amount": "Activity",
     "Sheet Name": "Facility"
 }, inplace=True)
-        final_df = final_df[['Res_Date', 'Facility', 'Source Sub Type', 'Activity', 'Activity Unit', 'CF Standard', 'Gas']]
+        final_df = final_df[['Res_Date', 'Facility', 'Source Sub Type', 'Treatment Activity', 'Accounting Method', 'Activity', 'Activity Unit', 'CF Standard', 'Gas']]
+
         final_df['Activity Unit'] = "m3"
         final_df['Res_Date'] = pd.to_datetime(final_df['Res_Date'])
 
