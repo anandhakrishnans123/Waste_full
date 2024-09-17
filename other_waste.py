@@ -86,7 +86,7 @@ if uploaded_file and template_file:
 
         # Match and reorder the columns with the template
         final_df = match_and_reorder_columns(final_df, correct_headers)
-        
+        final_df.dropna(subset=["Res_Date"], inplace=True)
         return final_df
 
     # Extract data for different garbage types
