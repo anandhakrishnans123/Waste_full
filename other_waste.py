@@ -62,7 +62,7 @@ if uploaded_file:
                 combined_data.append(temp_df)
 
         final_df = pd.concat(combined_data, ignore_index=True)
-        final_df = final_df[['Res_Date', 'Facility', 'Source Sub Type', 'Activity', 'Activity Unit', 'CF Standard', 'Gas']]
+        
 
         
         final_df['CF Standard'] = "IPCCC"
@@ -77,6 +77,7 @@ if uploaded_file:
     "Amount": "Activity",
     "Sheet Name": "Facility"
 }, inplace=True)
+        final_df = final_df[['Res_Date', 'Facility', 'Source Sub Type', 'Activity', 'Activity Unit', 'CF Standard', 'Gas']]
 
         return final_df
 
