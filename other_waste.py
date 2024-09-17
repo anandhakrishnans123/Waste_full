@@ -77,7 +77,10 @@ if uploaded_file:
 }, inplace=True)
         final_df = final_df[['Res_Date', 'Facility', 'Source Sub Type', 'Activity', 'Activity Unit', 'CF Standard', 'Gas']]
         final_df['Activity Unit'] = "m3"
+        final_df['Res_Date'] = pd.to_datetime(final_df['Res_Date'])
 
+# Converting the date to the desired format
+        final_df['Res_Date'] = final_df['Res_Date'].dt.strftime('%d/%m/%Y')
         return final_df
 
     # Extract data for different garbage types
