@@ -8,7 +8,7 @@ st.title('Vessel Waste Data Mapping Tool')
 
 # Upload Excel file button for Waste Tracker and Template
 uploaded_file = st.file_uploader("Upload Vessel Waste Tracker Excel File", type=["xlsx"])
-template_file = st.file_uploader("Upload Template Excel File", type=["xlsx"])
+template_file = pd.read_excel("Waste-Sample.xlsx")
 
 if uploaded_file and template_file:
     # Load the template file to extract the correct headers
