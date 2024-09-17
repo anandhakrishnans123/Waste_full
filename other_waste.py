@@ -29,63 +29,61 @@ if uploaded_file:
     all_sheets = pd.read_excel(uploaded_file, sheet_name=sheets_to_extract, header=[0, 1, 2])
 
     # Function to extract and unpivot garbage data
-def extract_and_unpivot_garbage_data(sheets_dict, garbage_type):
-    combined_data = []
-    
-    for sheet_name, vessel_df in sheets_dict.items():
-        date_column = pd.to_datetime(vessel_df.iloc[:, 0], errors='coerce')
-        first_valid_index = date_column.first_valid_index()
-
-        if first_valid_index is None:
-            continue  # Skip sheets without valid dates
-
-        date_column = date_column.loc[first_valid_index:].reset_index(drop=True)
-        data_rows = vessel_df.loc[first_valid_index:].reset_index(drop=True)
+ def extract_and_unpivot_garbage_data(sheets_dict, garbage_type):
+        combined_data = []
         
-        garbage_columns = [
-            col for col in data_rows.columns
-            if col[0] == 'Garbage Record Book' and col[1].strip() == garbage_type
-        ]
+        for sheet_name, vessel_df in sheets_dict.items():
+            date_column = pd.to_datetime(vessel_df.iloc[:, 0], errors='coerce')
+            first_valid_index = date_column.first_valid_index()
+
+            if first_valid_index is None:
+                continue  # Skip sheets without valid dates
+
+            date_column = date_column.loc[first_valid_index:].reset_index(drop=True)
+            data_rows = vessel_df.loc[first_valid_index:].reset_index(drop=True)
+            
+            garbage_columns = [
+                col for col in data_rows.columns
+                if col[0] == 'Garbage Record Book' and col[1].strip() == garbage_type
+            ]
+            
+            if not garbage_columns:
+                st.write(f"No '{garbage_type}' data found in sheet {sheet_name}")
+                continue
+
+            for col in garbage_columns:
+                sub_section = col[2]
+                temp_df = pd.DataFrame({
+                    'Date': date_column,
+                    'Sub Section': sub_section,
+                    'Amount': data_rows[col].reset_index(drop=True),
+                    'Sheet Name': sheet_name
+                })
+                combined_data.append(temp_df)
+
+        final_df = pd.concat(combined_data, ignore_index=True)
+        final_df = final_df[['Res_Date', 'Facility', 'Source Sub Type', 'Activity', 'Activity Unit', 'CF Standard', 'Gas']]
+
         
-        if not garbage_columns:
-            st.write(f"No '{garbage_type}' data found in sheet {sheet_name}")
-            continue
+        final_df['CF Standard'] = "IPCCC"
+        final_df['Activity Unit'] = "m3"
+        final_df['Gas'] = "CO2"
+        final_df.replace({"m3", "Total"}, np.nan, inplace=True)
+        final_df.dropna(subset=["Date"], inplace=True)
+        final_df.drop_duplicates(inplace=True)
+        final_df.rename(columns={
+    "Date": "Res_Date",
+    "Sub Section": "Source Sub Type",
+    "Amount": "Activity",
+    "Sheet Name": "Facility"
+}, inplace=True)
 
-        for col in garbage_columns:
-            sub_section = col[2]
-            temp_df = pd.DataFrame({
-                'Date': date_column,
-                'Sub Section': sub_section,
-                'Amount': data_rows[col].reset_index(drop=True),
-                'Sheet Name': sheet_name
-            })
-            combined_data.append(temp_df)
+        return final_df
+KeyError: "None of [Index(['Res_Date', 'Facility', 'Source Sub Type', 
 
-    final_df = pd.concat(combined_data, ignore_index=True)
+'Activity', 'Activity Unit',\n       'CF Standard', 'Gas'],\n      
 
-    # Renaming columns before reordering
-    final_df.rename(columns={
-        "Date": "Res_Date",
-        "Sub Section": "Source Sub Type",
-        "Amount": "Activity",
-        "Sheet Name": "Facility"
-    }, inplace=True)
-
-    # Adding required columns and filling with default values
-    final_df['CF Standard'] = "IPCCC"
-    final_df['Activity Unit'] = "m3"
-    final_df['Gas'] = "CO2"
-
-    # Cleaning up the data
-    final_df.replace({"m3", "Total"}, np.nan, inplace=True)
-    final_df.dropna(subset=["Res_Date"], inplace=True)
-    final_df.drop_duplicates(inplace=True)
-
-    # Reordering columns
-    final_df = final_df[['Res_Date', 'Facility', 'Source Sub Type', 'Activity', 'Activity Unit', 'CF Standard', 'Gas']]
-
-    return final_df
-
+dtype='object')] are in the [columns]"
 
 
     # Extract data for different garbage types
