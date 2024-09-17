@@ -83,7 +83,10 @@ if uploaded_file and template_file:
         final_df['CF Standard'] = "IPCCC"
         final_df['Activity Unit'] = "m3"
         final_df['Gas'] = "CO2"
+        final_df['Res_Date'] = pd.to_datetime(final_df['Res_Date'])
 
+        # Extract only the date part
+        final_df['Res_Date'] = final_df['Res_Date'].dt.date
         # Match and reorder the columns with the template
         final_df = match_and_reorder_columns(final_df, correct_headers)
         final_df.dropna(subset=["Res_Date"], inplace=True)
